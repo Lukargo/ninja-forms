@@ -8,11 +8,22 @@ define([], function() {
 			if ( _.size( response.errors ) == 0 && 'undefined' != typeof response.data.actions ) {
 				if ( 'undefined' != typeof response.data.actions.success_message && '' != response.data.actions.success_message ) {
 					var form_id = response.data.form_id;
-					jQuery( '#nf-form-' + form_id + '-cont .nf-response-msg' ).html( response.data.actions.success_message ).show();
+					var success_message = jQuery( '#nf-form-' + form_id + '-cont .nf-response-msg' );
+					
+					success_message.html( response.data.actions.success_message ).show();
+					
+					//Let's check if the success message is already visible in the viewport without scrolling
+					var top_of_success_message = success_message.offset().top;
+				    	var bottom_of_success_message = success_message.offset().top + success_message.outerHeight();
+				    	var bottom_of_screen = jQuery(window).scrollTop() + jQuery(window).height();
 
-					jQuery('html, body').animate({
-						scrollTop: ( jQuery( '#nf-form-' + form_id + '-cont .nf-response-msg' ).offset().top - 50 )
-					}, 0 );
+				    	if(!((bottom_of_screen > top_of_success_message) && (bottom_of_screen < bottom_of_success_message))){
+						//The element isn't visible, so let's scroll to the success message as in the previous release
+						jQuery('html, body').animate({
+							scrollTop: ( success_message.offset().top - 50 )
+						}, 0 );
+				   	}	
+				
 				}
 			}
 		}
